@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" height="100" dark>
+    <v-app-bar app color="primary" height="100" src="./assets/backround.jpg">
       <v-col cols="4">
         <v-row justify="center">
           <v-text-field
@@ -27,16 +27,24 @@
     <v-footer dark padless>
       <v-card class="flex" flat tile>
         <v-card-title class="py-2 white--text flex body-1">
-          <span> Created by Vitaliy Erofeev </span>
+          <div>
+            <div>Created by Vitaliy Erofeev</div>
+            <div class="caption">2021</div>
+          </div>
           <v-spacer></v-spacer>
-          <span>{{ new Date().getFullYear() }}</span>
+          <v-btn
+            v-for="(link, i) in links"
+            :key="i"
+            @click="goTo(link.url)"
+            class="mx-4"
+            dark
+            icon
+          >
+            <v-icon size="24px">
+              {{ link.icon }}
+            </v-icon>
+          </v-btn>
         </v-card-title>
-
-        <!-- <v-card-text class="py-2 white--text flex">
-          <strong class="title"> Created by Vitaliy Erofeev </strong>
-          <v-spacer></v-spacer>
-          {{ new Date().getFullYear() }}
-        </v-card-text> -->
       </v-card>
     </v-footer>
   </v-app>
@@ -49,7 +57,13 @@ export default {
   name: "App",
 
   data: () => ({
-    searchText: "vuex",
+    searchText: "",
+    links: [
+      {
+        icon: "mdi-github",
+        url: "https://github.com/VitaliyErofeev",
+      },
+    ],
   }),
   created() {
     this.searchPackages(this.searchText);
@@ -60,6 +74,9 @@ export default {
     }),
     search() {
       this.searchPackages(this.searchText);
+    },
+    goTo(url) {
+      window.open(url, "_blank").focus();
     },
   },
 };

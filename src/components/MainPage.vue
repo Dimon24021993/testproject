@@ -32,7 +32,7 @@ import { mapActions, mapGetters } from "vuex";
 import detailsDialog from "../dialogs/detailsDialog";
 
 export default {
-  name: "HelloWorld",
+  name: "MainPage",
   data: () => ({
     headers: [
       {
