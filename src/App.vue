@@ -23,6 +23,22 @@
     <v-main>
       <router-view />
     </v-main>
+
+    <v-footer dark padless>
+      <v-card class="flex" flat tile>
+        <v-card-title class="py-2 white--text flex body-1">
+          <span> Created by Vitaliy Erofeev </span>
+          <v-spacer></v-spacer>
+          <span>{{ new Date().getFullYear() }}</span>
+        </v-card-title>
+
+        <!-- <v-card-text class="py-2 white--text flex">
+          <strong class="title"> Created by Vitaliy Erofeev </strong>
+          <v-spacer></v-spacer>
+          {{ new Date().getFullYear() }}
+        </v-card-text> -->
+      </v-card>
+    </v-footer>
   </v-app>
 </template>
 
@@ -33,8 +49,11 @@ export default {
   name: "App",
 
   data: () => ({
-    searchText: "",
+    searchText: "vuex",
   }),
+  created() {
+    this.searchPackages(this.searchText);
+  },
   methods: {
     ...mapActions({
       searchPackages: "searchPackages",
@@ -45,3 +64,7 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+@import "./scss/main.scss";
+</style>
