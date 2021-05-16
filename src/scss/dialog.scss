@@ -16,10 +16,7 @@
           padding-left: 12px;
         }
         .dialog-card__content {
-          max-height: 800px;
-          min-height: calc(80vh - 84px);
-          min-height: -webkit-calc(80vh - 84px);
-          overflow-y: auto;
+          overflow-y: scroll;
           flex: 1 1 100%;
           padding: 16px;
           background-color: white;

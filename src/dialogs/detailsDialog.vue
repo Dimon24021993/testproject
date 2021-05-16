@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="show" width="900">
+    <v-dialog v-model="show" width="900" scrollable>
       <v-card class="dialog-container">
         <div class="dialog">
           <div class="dialog-card">
