@@ -10,6 +10,7 @@ export default new Vuex.Store({
     selectedPackage: {},
     versions: {},
     files: {},
+    stats: {},
   },
   getters: {
     getPackages(state) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     },
     getFiles(state) {
       return state.files;
+    },
+    getStats(state) {
+      return state.stats;
     },
   },
   mutations: {
@@ -38,6 +42,9 @@ export default new Vuex.Store({
     pushFiles(state, value) {
       state.files = value;
     },
+    pushStats(state, value) {
+      state.stats = value;
+    },
   },
   actions: {
     selectPackage: (state, value) => {
@@ -52,6 +59,21 @@ export default new Vuex.Store({
       axios
         .get(`https://data.jsdelivr.com/v1/package/npm/${value}`)
         .then((res) => state.commit("pushVersions", res.data));
+    },
+    getPackageStats: (state, value) => {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`https://data.jsdelivr.com/v1/package/npm/${value.name}/stats`)
+          .then(
+            (response) => {
+              resolve(response);
+              state.commit("pushStats", response.data);
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+      });
     },
     getPackageFiles: (state, value) => {
       return new Promise((resolve, reject) => {

@@ -3,3 +3,16 @@
 .container {
   padding: 16px;
 }
+
+.searchInput {
+  display: flex;
+  width: 600px;
+  div {
+    &:nth-child(1) {
+      flex: 3;
+    }
+    &:nth-child(2) {
+      flex: 1;
+    }
+  }
+}

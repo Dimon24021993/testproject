@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" height="100" src="./assets/backround.jpg">
-      <v-col cols="4">
-        <v-row justify="center">
+      <div class="searchInput">
+        <div>
           <v-text-field
             v-model="searchText"
             class="mr-2"
@@ -15,9 +15,11 @@
             dense
             @keypress.enter="search()"
           ></v-text-field>
+        </div>
+        <div>
           <v-btn height="38" @click="search()"> SEARCH </v-btn>
-        </v-row>
-      </v-col>
+        </div>
+      </div>
     </v-app-bar>
 
     <v-main>

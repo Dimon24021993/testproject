@@ -22,7 +22,7 @@
                     }}
                   </span>
                 </div>
-                <div class="tags">
+                <div v-if="selectedPackage.author" class="tags">
                   <span>
                     {{ "Author: " + selectedPackage.author.name }}
                   </span>
@@ -73,27 +73,27 @@
                         </div>
                       </v-toolbar>
                     </template>
-                    <template v-slot:item="item">
-                      <tr @click="getFiles(item.item)">
+                    <template v-slot:item="{ item }">
+                      <tr @click="getFiles(item)">
                         <td>
                           <v-icon
                             >{{
-                              item.item.type == "directory"
+                              item.type == "directory"
                                 ? "mdi-folder"
-                                : item.item.type == "file"
+                                : item.type == "file"
                                 ? "mdi-file-outline"
                                 : "mdi-arrow-up-bold"
                             }}
                           </v-icon>
                         </td>
                         <td>
-                          {{ item.item.type != "up" ? item.item.type : "..." }}
+                          {{ item.type != "up" ? item.type : "..." }}
                         </td>
-                        <td>{{ item.item.name }}</td>
+                        <td>{{ item.name }}</td>
                         <td>
                           <v-icon
-                            v-if="item.item.type == 'file'"
-                            @click="getPackFileByHash(item.item)"
+                            v-if="item.type == 'file'"
+                            @click="getPackFileByHash(item)"
                           >
                             mdi-download
                           </v-icon>
@@ -102,6 +102,25 @@
                     </template>
                   </v-data-table>
                 </div>
+              </div>
+              <div v-if="Object.keys(statistics).length != 0">
+                <div>Usage per Month</div>
+                <v-sheet
+                  flat
+                  class="v-sheet--offset mx-auto"
+                  color="grey lighten-2"
+                  elevation="1"
+                  max-width="calc(100% - 32px)"
+                >
+                  <v-sparkline
+                    :value="Object.values(statistics)"
+                    color="white"
+                    :gradient="['#f72047', '#ffd200', '#1feaea']"
+                    :smooth="16"
+                    line-width="2"
+                    padding="16"
+                  ></v-sparkline>
+                </v-sheet>
               </div>
             </div>
             <div class="dialog-card__actions">
@@ -124,6 +143,7 @@ export default {
     currentVersion: "",
     currentBranch: [],
     currenetNode: [],
+    statistics: {},
     headers: [
       {
         text: "Name",
@@ -144,6 +164,7 @@ export default {
       selectedPackage: "getSelectedPackage",
       versions: "getVersions",
       files: "getFiles",
+      stats: "getStats",
     }),
     show: {
       get() {
@@ -156,7 +177,10 @@ export default {
   },
   watch: {
     currentVersion(oldVal, newVal) {
-      if (newVal != oldVal) this.getPackFiles();
+      if (newVal != oldVal) {
+        this.getPackFiles();
+        this.getPackStats();
+      }
     },
   },
   created() {
@@ -166,6 +190,7 @@ export default {
   methods: {
     ...mapActions({
       getPackageVersions: "getPackageVersions",
+      getPackageStats: "getPackageStats",
     }),
     setCurrentVersion() {
       this.currentVersion = this.selectedPackage.version;
@@ -194,6 +219,16 @@ export default {
         .then((res) => {
           this.setCurrentBranch();
           this.currenetNode = res.data.files;
+        });
+    },
+    getPackStats() {
+      this.$store
+        .dispatch("getPackageStats", {
+          name: this.selectedPackage.name,
+        })
+        .then((res) => {
+          if (res.data.total != 0)
+            this.statistics = res.data.versions[this.currentVersion].dates;
         });
     },
     getPackFileByHash(item) {
