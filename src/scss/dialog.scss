@@ -38,10 +38,9 @@
             margin-bottom: 24px;
           }
           .files_container {
-            margin-bottom: 8px;
-            .header {
-              display: flex;
-              justify-content: space-between;
+            margin-bottom: 16px;
+            .version_select {
+              max-width: 150px;
             }
           }
         }

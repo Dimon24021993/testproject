@@ -14,7 +14,7 @@
                     {{ "version: " + selectedPackage.version }}
                   </span>
                 </div>
-                <div class="tags mr-2">
+                <div v-if="selectedPackage.date" class="tags mr-2">
                   <span>
                     {{
                       "Date: " +
@@ -28,7 +28,7 @@
                   </span>
                 </div>
               </div>
-              <div class="description">
+              <div v-if="selectedPackage.description" class="description">
                 {{ selectedPackage.description }}
               </div>
               <div class="links">
@@ -45,66 +45,64 @@
                 </v-expansion-panels>
               </div>
               <div class="files_container">
-                <div class="header"></div>
-                <div class="file_list">
-                  <v-data-table
-                    :headers="headers"
-                    :items="currenetNode"
-                    :items-per-page="10"
-                    class="elevation-1"
-                    dense
-                    hide-default-footer
-                    hide-default-header
-                  >
-                    <template v-slot:top>
-                      <v-toolbar flat>
-                        <div>{{ currentBranch.join("/") }}</div>
-                        <v-spacer></v-spacer>
-                        <div>
-                          <v-select
-                            v-model="currentVersion"
-                            :items="versions.versions"
-                            outlined
-                            label="Vesion"
-                            dense
-                            light
-                            hide-details
-                          ></v-select>
-                        </div>
-                      </v-toolbar>
-                    </template>
-                    <template v-slot:item="{ item }">
-                      <tr @click="getFiles(item)">
-                        <td>
-                          <v-icon
-                            >{{
-                              item.type == "directory"
-                                ? "mdi-folder"
-                                : item.type == "file"
-                                ? "mdi-file-outline"
-                                : "mdi-arrow-up-bold"
-                            }}
-                          </v-icon>
-                        </td>
-                        <td>
-                          {{ item.type != "up" ? item.type : "..." }}
-                        </td>
-                        <td>{{ item.name }}</td>
-                        <td>
+                <v-data-table
+                  :headers="headers"
+                  :items="currenetNode"
+                  :items-per-page="10"
+                  class="elevation-1"
+                  dense
+                  hide-default-footer
+                  hide-default-header
+                >
+                  <template v-slot:top>
+                    <v-toolbar flat>
+                      <div>{{ currentBranch.join("/") }}</div>
+                      <v-spacer></v-spacer>
+                      <div class="version_select">
+                        <v-select
+                          v-model="currentVersion"
+                          :items="versions.versions"
+                          label="Vesion"
+                          dense
+                          light
+                          hide-details
+                        ></v-select>
+                      </div>
+                    </v-toolbar>
+                  </template>
+                  <template v-slot:item="{ item }">
+                    <tr @click="getFiles(item)">
+                      <td>
+                        <v-icon
+                          >{{
+                            item.type == "directory"
+                              ? "mdi-folder"
+                              : item.type == "file"
+                              ? "mdi-file-outline"
+                              : "mdi-arrow-up-bold"
+                          }}
+                        </v-icon>
+                      </td>
+                      <td>
+                        {{ item.type != "up" ? item.type : "..." }}
+                      </td>
+                      <td>{{ item.name }}</td>
+                      <td>
+                        <v-btn small icon>
                           <v-icon
                             v-if="item.type == 'file'"
                             @click="getPackFileByHash(item)"
                           >
                             mdi-download
                           </v-icon>
-                        </td>
-                      </tr>
-                    </template>
-                  </v-data-table>
-                </div>
+                        </v-btn>
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>
               </div>
               <div v-if="Object.keys(statistics).length != 0">
-                <div>Usage per Month</div>
+                <div>{{ `Usage per Month: ${usageCount}` }}</div>
                 <v-sheet
                   flat
                   class="v-sheet--offset mx-auto"
@@ -144,6 +142,7 @@ export default {
     currentBranch: [],
     currenetNode: [],
     statistics: {},
+    usageCount: 0,
     headers: [
       {
         text: "Name",
@@ -227,8 +226,13 @@ export default {
           name: this.selectedPackage.name,
         })
         .then((res) => {
-          if (res.data.total != 0)
+          if (res.data.versions[this.currentVersion]) {
             this.statistics = res.data.versions[this.currentVersion].dates;
+            this.usageCount = res.data.versions[this.currentVersion].total;
+          } else {
+            this.statistics = [];
+            this.usageCount = 0;
+          }
         });
     },
     getPackFileByHash(item) {
