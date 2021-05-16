@@ -36,8 +36,8 @@
                   <v-expansion-panel>
                     <v-expansion-panel-header> Links </v-expansion-panel-header>
                     <v-expansion-panel-content
-                      v-for="(value, name) in selectedPackage.links"
-                      :key="value"
+                      v-for="(value, name, i) in selectedPackage.links"
+                      :key="i"
                     >
                       <a :href="value" target="_blank">{{ name }}</a>
                     </v-expansion-panel-content>
