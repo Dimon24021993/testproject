@@ -3,10 +3,14 @@
     <v-row>
       <v-col cols="12">
         <v-data-table
+          :loading="$store.state.searchPackageModule.loading.searchPackages"
           :headers="headers"
           :items="packages"
-          :items-per-page="10"
+          :items-per-page.sync="rowsPerPage"
+          :page.sync="page"
           class="elevation-1"
+          :server-items-length="total"
+          :footer-props="pagination"
         >
           <template v-slot:item="{ item }">
             <tr @click="openDetail(item.package)">
@@ -28,8 +32,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import detailsDialog from "../dialogs/detailsDialog";
+import { mapActions, mapGetters } from "vuex"
+import detailsDialog from "../dialogs/detailsDialog"
 
 export default {
   name: "MainPage",
@@ -45,6 +49,7 @@ export default {
     ],
     info: [],
     dialog: false,
+    paginationObj: {},
   }),
   components: {
     detailsDialog,
@@ -52,16 +57,53 @@ export default {
   computed: {
     ...mapGetters({
       packages: "getPackages",
+      getRowsPerPage: "getRowsPerPage",
+      getPage: "getPage",
+      total: "getTotal",
+      rowsPerPageItems: "getRowsPerPageItems",
     }),
+    pagination: {
+      get() {
+        return {
+          ...this.paginationObj,
+          itemsPerPageOptions: this.rowsPerPageItems,
+        }
+      },
+      set(value) {
+        this.paginationObj = value
+      },
+    },
+    rowsPerPage: {
+      get() {
+        return this.getRowsPerPage
+      },
+      set(value) {
+        this.setRowsPerPage(value)
+        if (this.page == 1) this.searchPackages()
+        else this.page = 1
+      },
+    },
+    page: {
+      get() {
+        return this.getPage
+      },
+      set(value) {
+        this.setPage(value)
+        this.searchPackages()
+      },
+    },
   },
   methods: {
     ...mapActions({
       selectPackage: "selectPackage",
+      setRowsPerPage: "setRowsPerPage",
+      searchPackages: "searchPackages",
+      setPage: "setPage",
     }),
     openDetail(item) {
-      this.selectPackage(item);
-      this.dialog = true;
+      this.selectPackage(item)
+      this.dialog = true
     },
   },
-};
+}
 </script>

@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex"
 
 export default {
   data: () => ({
@@ -167,24 +167,24 @@ export default {
     }),
     show: {
       get() {
-        return this.dialog;
+        return this.dialog
       },
       set() {
-        this.$emit("close");
+        this.$emit("close")
       },
     },
   },
   watch: {
     currentVersion(oldVal, newVal) {
       if (newVal != oldVal) {
-        this.getPackFiles();
-        this.getPackStats();
+        this.getPackFiles()
+        this.getPackStats()
       }
     },
   },
   created() {
-    this.setCurrentVersion();
-    this.getPackageVersions(this.selectedPackage.name);
+    this.setCurrentVersion()
+    this.getPackageVersions(this.selectedPackage.name)
   },
   methods: {
     ...mapActions({
@@ -192,21 +192,21 @@ export default {
       getPackageStats: "getPackageStats",
     }),
     setCurrentVersion() {
-      this.currentVersion = this.selectedPackage.version;
+      this.currentVersion = this.selectedPackage.version
     },
     setCurrentBranch() {
-      this.currentBranch = [];
-      this.currentBranch.push(this.selectedPackage.name);
+      this.currentBranch = []
+      this.currentBranch.push(this.selectedPackage.name)
     },
     getFiles(item) {
       if (item.type == "directory") {
-        this.history.push(this.currenetNode);
-        this.currenetNode = [{ name: "", type: "up" }, ...item.files];
-        this.currentBranch.push(item.name);
+        this.history.push(this.currenetNode)
+        this.currenetNode = [{ name: "", type: "up" }, ...item.files]
+        this.currentBranch.push(item.name)
       }
       if (item.type == "up") {
-        this.currenetNode = this.history.pop();
-        this.currentBranch.pop();
+        this.currenetNode = this.history.pop()
+        this.currentBranch.pop()
       }
     },
     getPackFiles() {
@@ -216,9 +216,9 @@ export default {
           version: this.currentVersion,
         })
         .then((res) => {
-          this.setCurrentBranch();
-          this.currenetNode = res.data.files;
-        });
+          this.setCurrentBranch()
+          this.currenetNode = res.data.files
+        })
     },
     getPackStats() {
       this.$store
@@ -227,24 +227,24 @@ export default {
         })
         .then((res) => {
           if (res.data.versions[this.currentVersion]) {
-            this.statistics = res.data.versions[this.currentVersion].dates;
-            this.usageCount = res.data.versions[this.currentVersion].total;
+            this.statistics = res.data.versions[this.currentVersion].dates
+            this.usageCount = res.data.versions[this.currentVersion].total
           } else {
-            this.statistics = [];
-            this.usageCount = 0;
+            this.statistics = []
+            this.usageCount = 0
           }
-        });
+        })
     },
     getPackFileByHash(item) {
-      let curBranch = [...this.currentBranch];
+      let curBranch = [...this.currentBranch]
       let currentPath =
         this.currentBranch.length > 1
           ? `/${curBranch.splice(1, curBranch.length).join("/")}`
-          : "";
+          : ""
 
-      var url = `https://cdn.jsdelivr.net/npm/${this.selectedPackage.name}@${this.currentVersion}${currentPath}/${item.name}`;
-      window.open(url, "_blank").focus();
+      var url = `https://cdn.jsdelivr.net/npm/${this.selectedPackage.name}@${this.currentVersion}${currentPath}/${item.name}`
+      window.open(url, "_blank").focus()
     },
   },
-};
+}
 </script>

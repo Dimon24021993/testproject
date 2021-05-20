@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import MainPage from "../components/MainPage";
+import MainPage from "../components/MainPage"
 
 export default {
   name: "Home",
@@ -11,5 +11,5 @@ export default {
   components: {
     MainPage,
   },
-};
+}
 </script>

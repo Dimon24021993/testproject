@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from "vuex"
 
 export default {
   name: "App",
@@ -68,20 +68,20 @@ export default {
     ],
   }),
   created() {
-    this.searchPackages(this.searchText);
+    this.searchPackages(this.searchText)
   },
   methods: {
     ...mapActions({
       searchPackages: "searchPackages",
     }),
     search() {
-      this.searchPackages(this.searchText);
+      this.searchPackages(this.searchText)
     },
     goTo(url) {
-      window.open(url, "_blank").focus();
+      window.open(url, "_blank").focus()
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
